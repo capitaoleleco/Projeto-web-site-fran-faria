@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações - Fran Faria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CORES E VARIÁVEIS --- */
+        :root {
+            --cor-fundo: #e8e3d9;    /* Bege */
+            --cor-sidebar: #F4A79D;  /* Rosa */
+            --cor-texto: #59423b;    /* Marrom */
+        }
+
+        /* --- 2. CONFIGURAÇÕES GERAIS --- */
+        body { 
+            margin: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--cor-fundo); 
+            color: var(--cor-texto); 
+            overflow-x: hidden; /* Evita rolagem lateral indesejada */
+        }
+
+        /* --- 3. BARRA LATERAL (Padrão de todas as páginas) --- */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; /* Largura fechada */
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; /* Animação suave */
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+        
+        /* Classe que abre o menu */
+        .sidebar.aberta { width: 280px !important; }
+
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            white-space: nowrap; 
+            pointer-events: none;
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: 0.3s; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 4. LAYOUT ESPECÍFICO DE AVALIAÇÕES --- */
+        .container-avaliacoes {
+            margin-left: 50px; /* Deixa espaço para a sidebar */
+            padding: 80px 5%; /* Espaçamento interno */
+            text-align: center; /* Centraliza o título */
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 400; /* Fonte fina/regular */
+            margin-bottom: 80px; /* Distância entre título e depoimentos */
+        }
+
+        /* GRID: A mágica das colunas */
+        .grid-depoimentos {
+            display: grid; /* Ativa o sistema de grid */
+            
+            /* Cria 3 colunas de tamanhos iguais (1fr = 1 fraction) */
+            grid-template-columns: repeat(3, 1fr); 
+            
+            gap: 40px; /* Espaço entre as colunas */
+            max-width: 1200px; /* Limita a largura máxima para não ficar muito esticado */
+            margin: 0 auto; /* Centraliza o grid na tela */
+        }
+
+        /* Estilo de cada bloco de depoimento */
+        .depoimento-item {
+            text-align: left; /* Alinha o texto do depoimento à esquerda para leitura fácil */
+        }
+
+        .texto-depoimento {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.5; /* Altura da linha confortável */
+        }
+
+        .nome-cliente {
+            font-weight: 700; /* Negrito */
+            font-size: 1.1em;
+            color: #5a423b;
+            text-transform: lowercase; /* Força letras minúsculas (estilo visual) */
+        }
+
+        /* --- 5. RESPONSIVIDADE (CELULAR) --- */
+        @media (max-width: 768px) {
+            .grid-depoimentos { 
+                /* No celular, muda de 3 colunas para 1 única coluna */
+                grid-template-columns: 1fr; 
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="container-avaliacoes">
+        <h1>O que os clientes dizem?</h1>
+
+        <div class="grid-depoimentos">
+            
+            <div class="depoimento-item">
+                <p class="texto-depoimento">O seu toque é mágico e vai muito além da estética, é uma verdadeira experiência de autoestima. Você é uma verdadeira artista, não apenas nos procedimentos, mas na forma como cuida de cada pessoa. Parabéns por ser essa inspiração de luz e alegria.</p>
+                <p class="nome-cliente">cliente</p>
+            </div>
+            
+            <div class="depoimento-item">
+                <p class="texto-depoimento">O resultado foi muito além das minhas expectativas, fiquei me sentindo linda. O mais especial é que ficou natural, sutil e elegante; todos percebem que estou mais bonita, mas sem identificar exatamente o que fiz. Ganhou uma cliente para sempre pelo profissionalismo e cuidado em cada detalhe.</p>
+                <p class="nome-cliente">cliente</p>
+            </div>
+            
+            <div class="depoimento-item">
+                <p class="texto-depoimento">Você é uma profissional exemplar, daquelas raras em quem confiamos o rosto e o coração sem medo. Admiro profundamente sua sensibilidade e o amor que coloca em cada detalhe. Estou simplesmente encantada e já me sinto linda antes mesmo do resultado final.</p>
+                <p class="nome-cliente">cliente</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+</body>
+</html>

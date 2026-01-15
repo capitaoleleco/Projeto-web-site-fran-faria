@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Fran Faria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. CORES E VARIÁVEIS --- */
+        :root { 
+            --cor-fundo: #e8e3d9;  /* Bege */
+            --cor-sidebar: #F4A79D; /* Rosa */
+            --cor-texto: #59423b;   /* Marrom */
+        }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--cor-fundo); 
+            color: var(--cor-texto); 
+            overflow-x: hidden; 
+        }
+
+        /* --- 2. BARRA LATERAL (Padrão do projeto) --- */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; 
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; 
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+        
+        .sidebar.aberta { width: 280px !important; }
+
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            white-space: nowrap; 
+            pointer-events: none;
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: 0.3s; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 3. LAYOUT DA PÁGINA DE CONTATO --- */
+        .container-contato {
+            margin-left: 50px; /* Espaço da sidebar */
+            padding: 50px 8%; /* Margem interna */
+            
+            /* FLEXBOX VERTICAL: */
+            display: flex;
+            flex-direction: column; /* Empilha os itens (Logo, Texto, Ícones) */
+            justify-content: center; /* Centraliza tudo no meio da tela (vertical) */
+            
+            min-height: 80vh; /* Ocupa pelo menos 80% da altura da tela */
+        }
+
+        .logo-contato img {
+            max-width: 150px; /* Limita o tamanho do logo */
+            margin-bottom: 40px; /* Espaço abaixo do logo */
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 300;
+            margin: 0 0 20px 0;
+            color: #59423b;
+        }
+
+        p.descricao {
+            font-size: 1.2em;
+            margin-bottom: 15px; 
+            max-width: 600px; /* Evita que a linha de texto fique muito comprida */
+            line-height: 1.5;
+        }
+
+        /* --- 4. ESTILO DE UM BOTÃO GRANDE (OPCIONAL) --- 
+           Nota: Este estilo está definido, mas não está sendo usado no HTML abaixo 
+           porque você optou pelos ícones redondos. Se quiser usar um botão grande,
+           basta criar um link com a class="btn-whatsapp-destaque". */
+        .btn-whatsapp-destaque {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #25D366; /* Verde WhatsApp */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 35px;
+            border-radius: 50px; /* Pílula */
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-top: 30px;
+            margin-bottom: 40px;
+            width: fit-content;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp-destaque:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+            background-color: #20bd5a;
+        }
+
+        .btn-whatsapp-destaque i {
+            font-size: 1.3em;
+        }
+
+        /* --- 5. ÍCONES SOCIAIS (CÍRCULOS) --- */
+        .icones-sociais {
+            display: flex; /* Coloca os ícones um ao lado do outro */
+            gap: 20px; /* Espaço entre eles */
+        }
+
+        .icone {
+            width: 40px;
+            height: 40px;
+            background-color: #59423b; /* Fundo Marrom */
+            color: #e8e3d9; /* Ícone Bege */
+            border-radius: 50%; /* Faz ficar perfeitamente redondo */
+            
+            /* Centraliza o desenho do ícone dentro da bolinha */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            font-size: 20px;
+            text-decoration: none;
+            transition: transform 0.2s; /* Animação rápida */
+        }
+
+        /* Efeito ao passar o mouse */
+        .icone:hover { 
+            transform: scale(1.1); /* Aumenta 10% */
+            background-color: #8b5a51; /* Muda para marrom avermelhado */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="container-contato">
+        
+        <div class="logo-contato">
+            <img src="fotos/logo_fran_faria.png" alt="Fran Faria">
+        </div>
+        
+        <h1>Endereço</h1>
+        
+        <p class="descricao">São José do Rio Preto: Rua Antônio de Godoy, 5203 - Nova Redentora</p>
+        <p class="descricao">Votuporanga: Rua Bahia, 2652</p>
+
+        <div class="icones-sociais">
+            <a href="https://www.facebook.com/share/1C4dUkxnB8/" class="icone">
+                <i class="fab fa-facebook-f"></i> </a>
+            
+            <a href="https://www.instagram.com/franfariafacial/#" class="icone">
+                <i class="fab fa-instagram"></i>
+            </a>
+            
+            <a href="https://wa.me/message/6BFT4N2WI6ISO1" class="icone">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            
+            <a href="mailto:franciellicfaria@gmail.com" class="icone">
+                <i class="fas fa-envelope"></i>
+            </a> 
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedimentos - Fran Faria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CONFIGURAÇÕES GERAIS --- */
+        :root { 
+            --cor-fundo: #ffffff; 
+            --cor-sidebar: #F4A79D;
+        }
+        
+        body { 
+            margin: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--cor-fundo); 
+            overflow-x: hidden; /* Evita rolagem lateral */
+        }
+
+        /* --- 2. BARRA LATERAL (Padrão) --- */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; 
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; 
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+        
+        .sidebar.aberta { width: 280px !important; }
+
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            white-space: nowrap; 
+            pointer-events: none;
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: 0.3s; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 3. GALERIA DE PROCEDIMENTOS (GRID) --- */
+        .container-galeria {
+            margin-left: 50px; /* Espaço para a sidebar */
+            display: grid; /* Ativa o modo Grade */
+            
+            /* Cria 3 colunas de tamanhos iguais (1 fraction each) */
+            grid-template-columns: repeat(3, 1fr); 
+            
+            min-height: 100vh; 
+            /* A largura é 100% da tela MENOS os 50px da barra lateral */
+            width: calc(100% - 50px);
+        }
+
+        /* A "caixa" de cada foto */
+        .item-galeria {
+            position: relative; /* Necessário para posicionar o texto em cima */
+            height: 50vh; /* Cada foto ocupa metade da altura da tela */
+            overflow: hidden; /* Se a imagem der zoom, não sai para fora da caixa */
+            border: 4px solid #F4A79D; /* Borda rosa entre as fotos */
+            box-sizing: border-box; /* Garante que a borda não aumente o tamanho total */
+            background-color: #000; /* Fundo preto (ajuda a escurecer a imagem) */
+        }
+
+        /* A Imagem em si */
+        .item-galeria img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem preencher o espaço sem esticar */
+            object-position: center center; /* Centraliza a imagem */
+            display: block;
+            
+            /* Prepara a animação de zoom e transparência */
+            transition: transform 0.5s ease, opacity 0.3s ease;
+            opacity: 0.8; /* Imagem levemente escura para o texto aparecer melhor */
+        }
+        
+        /* EFEITO AO PASSAR O MOUSE (HOVER) */
+        .item-galeria:hover img {
+            transform: scale(1.1); /* Dá um zoom de 10% */
+            opacity: 0.5; /* Escurece mais a imagem para destacar o texto */
+        }
+
+        /* --- 4. TEXTO SOBRE A IMAGEM (LEGENDA) --- */
+        .legenda {
+            position: absolute; /* Solta o texto para flutuar sobre a imagem */
+            top: 50%; /* Meio da altura */
+            left: 50%; /* Meio da largura */
+            transform: translate(-50%, -50%); /* Ajuste fino para centralizar exato */
+            width: 90%;
+            text-align: center;
+            z-index: 10; /* Garante que fique EM CIMA da imagem */
+            pointer-events: none; /* O clique passa pelo texto e vai pra imagem */
+        }
+
+        .legenda h3 {
+            color: #ffffff;
+            font-size: 1.5em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin: 0;
+            letter-spacing: 2px;
+            /* Sombra preta atrás do texto para garantir leitura em fotos claras */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); 
+        }
+
+        .legenda p {
+            color: #f0f0f0;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        /* --- 5. RESPONSIVIDADE (ADAPTAÇÃO) --- */
+        
+        /* Tablet: Muda de 3 para 2 colunas */
+        @media (max-width: 900px) {
+            .container-galeria { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        /* Celular: Muda de 2 para 1 coluna (imagem grande) */
+        @media (max-width: 600px) {
+            .container-galeria { grid-template-columns: 1fr; }
+            .item-galeria { height: 40vh; } /* Diminui um pouco a altura no celular */
+            .legenda h3 { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="container-galeria">
+        
+        <div class="item-galeria">
+            <img src="fotos/capilar1.jpeg" alt="Terapia Capilar">
+            <div class="legenda">
+                <h3>Terapia Capilar</h3>
+                <p>Saúde e Vitalidade dos Fios</p>
+            </div>
+        </div>
+
+        <div class="item-galeria">
+            <img src="fotos/toxina1.jpeg" alt="Toxina Botulínica">
+            <div class="legenda">
+                <h3>Toxina Botulínica</h3>
+                <p>Aplicação Preventiva e Corretiva</p>
+            </div>
+        </div>
+
+        <div class="item-galeria">
+            <img src="fotos/armonizacao1.jpeg" alt="Harmonização Facial">
+            <div class="legenda">
+                <h3>Harmonização Facial</h3>
+                <p>Equilíbrio e Simetria</p>
+            </div>
+        </div>
+
+        <div class="item-galeria">
+            <img src="fotos/labios1.jpeg" alt="Preenchimento Labial">
+            <div class="legenda">
+                <h3>Preenchimento Labial</h3>
+                <p>Volume e Contorno</p>
+            </div>
+        </div>
+
+        <div class="item-galeria">
+            <img src="fotos/olheiras1.jpeg" alt="Olheiras">
+            <div class="legenda">
+                <h3>Olheiras</h3>
+                <p>Tratamentos Específicos</p>
+            </div>
+        </div>
+        
+        <div class="item-galeria">
+            <img src="fotos/camuflagem1.jpeg" alt="Camuflagem">
+            <div class="legenda">
+                <h3>Camuflagem</h3>
+                <p>Olheiras e Cicatrizes</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Fran Faria - Início</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. VARIÁVEIS (:root) --- 
+           Aqui definimos a paleta de cores. Se mudar aqui, muda no site todo. */
+        :root {
+            --cor-fundo-principal: #e8e3d9; /* Bege claro */
+            --cor-acento-escuro: #8b5a51;   /* Marrom avermelhado (fundo da imagem) */
+            --cor-texto: #59423b;           /* Marrom escuro (textos) */
+            --cor-clara: #ffffff;           /* Branco */
+            --cor-sidebar: #F4A79D;         /* Rosa da barra lateral */
+        }
+
+        /* --- 2. CONFIGURAÇÕES GERAIS --- */
+        body {
+            margin: 0; /* Remove a margem branca padrão do navegador */
+            font-family: 'Montserrat', sans-serif; /* Define a fonte padrão */
+            background-color: var(--cor-fundo-principal);
+            overflow-x: hidden; /* Impede rolagem horizontal indesejada */
+        }
+
+        /* --- 3. BARRA LATERAL (SIDEBAR) --- */
+        .sidebar { 
+            position: fixed; /* Fixa a barra na tela (não sai ao rolar) */
+            top: 0; 
+            left: 0; 
+            height: 100%;    /* Ocupa a altura total da tela */
+            width: 50px;     /* Largura inicial (fechada) */
+            background: var(--cor-sidebar); 
+            z-index: 1000;   /* Garante que fique acima de tudo */
+            transition: width 0.5s ease; /* Animação suave ao abrir/fechar */
+            overflow: hidden; /* Esconde os textos quando a barra está fina */
+            box-sizing: border-box;
+        }
+        
+        /* Classe que o JavaScript adiciona para abrir o menu */
+        .sidebar.aberta { 
+            width: 280px !important; /* Nova largura quando aberto */
+        }
+
+        /* Ícone de Menu (Hambúrguer) */
+        .menu-icon { 
+            cursor: pointer; /* Mãozinha do mouse */
+            padding: 15px; 
+            position: absolute; 
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; /* Empilha as 3 linhas */
+            justify-content: space-around; 
+        }
+        
+        /* As 3 linhas brancas do ícone */
+        .menu-icon span { 
+            display: block; 
+            height: 3px; 
+            width: 100%; 
+            background: #fff; 
+            border-radius: 1px; 
+        }
+
+        /* Lista de Links do Menu */
+        .menu-itens { 
+            margin-top: 60px; /* Espaço para não ficar em cima do ícone */
+            display: flex; 
+            flex-direction: column; /* Um link embaixo do outro */
+            gap: 30px; /* Espaço entre os links */
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; /* Começa invisível */
+            transition: opacity 0.3s ease; 
+            white-space: nowrap; /* Impede que o texto quebre linha */
+            pointer-events: none; /* Impede clicar quando invisível */
+        }
+        
+        /* Quando a sidebar abre, os itens aparecem */
+        .sidebar.aberta .menu-itens { 
+            opacity: 1; 
+            transition-delay: 0.2s; /* Espera a barra abrir para aparecer */
+            pointer-events: auto; /* Permite clicar */
+        }
+        
+        /* Estilo dos Links (a) */
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; /* Tira o sublinhado */
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: all 0.3s ease; 
+        }
+        
+        /* Efeito ao passar o mouse no link */
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); /* Fundo translúcido */
+            padding-left: 25px; /* Move levemente para a direita */
+            font-weight: 600;
+        }
+
+        /* --- 4. ÁREA PRINCIPAL (HERO) --- */
+        .hero-section {
+            display: flex; /* Cria o layout flexível */
+            min-height: 100vh; /* Garante altura mínima de 100% da tela */
+            background-color: var(--cor-fundo-principal);
+            position: relative;
+            overflow: hidden;
+            margin-left: 50px; /* Deixa espaço para a barra lateral fechada */
+        }
+
+        .main-content {
+            display: flex;
+            width: 100%; /* Ocupa toda a largura disponível */
+        }
+
+        /* Lado Esquerdo: Texto e Logo */
+        .text-content {
+            flex: 1; /* Ocupa 50% do espaço disponível */
+            padding: 50px;
+            display: flex;
+            flex-direction: column; /* Empilha logo e texto */
+            justify-content: center; /* Centraliza verticalmente */
+            color: var(--cor-texto);
+            z-index: 10; /* Garante que o texto fique sobre o fundo */
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-width: 180px; /* Limita o tamanho da logo */
+            height: auto;
+        }
+
+        .headline {
+            font-size: 2.5em;
+            line-height: 1.1; /* Espaçamento entre linhas apertado */
+            font-weight: 350; /* Fonte mais fina e elegante */
+            margin: 0;
+        }
+
+        /* Lado Direito: Imagem com Recorte */
+        .image-container {
+            flex: 1; /* Ocupa os outros 50% do espaço */
+            position: relative;
+            background-color: var(--cor-fundo-principal);
+        }
+
+        /* Wrapper é a "caixa" que corta a imagem */
+        .image-wrapper {
+            position: absolute;
+            top: 0; 
+            bottom: 0; 
+            left: -100px; /* Puxa para a esquerda para invadir a área do texto */
+            right: 0;
+            
+            /* --- O PULO DO GATO: CORTE DIAGONAL --- */
+            /* Cria o formato geométrico irregular */
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%); 
+            
+            background-color: var(--cor-acento-escuro); 
+            /* Sombra projetada na borda do corte */
+            filter: drop-shadow(-4px 0px 0px rgba(0,0,0,0.8)); 
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem preencher sem esticar/deformar */
+            display: block;
+            object-position: 50% 15%; /* Ajusta o foco da imagem (Centro, Topo) */
+        }
+        
+        /* --- 5. RESPONSIVIDADE (CELULAR/TABLET) --- 
+           Regras aplicadas apenas se a tela for menor que 900px */
+        @media (max-width: 900px) {
+            .hero-section {
+                margin-left: 50px; 
+                min-height: auto; /* Remove altura fixa */
+                height: auto;
+                padding-bottom: 50px; 
+            }
+
+            .main-content { 
+                flex-direction: column; /* Muda layout para COLUNA (um em cima do outro) */
+            }
+
+            .text-content {
+                padding: 40px 30px;
+                text-align: center; /* Centraliza texto no celular */
+                order: 0; /* Força o texto a aparecer PRIMEIRO */
+            }
+
+            .image-container {
+                height: 400px; /* Altura fixa para imagem no celular */
+                min-height: 400px;
+                flex: none;
+                width: 100%;
+                order: 1; /* Força a imagem a aparecer DEPOIS */
+            }
+
+            .image-wrapper { 
+                position: relative; 
+                width: 100%;
+                height: 100%;
+                left: 0; 
+                top: 0;
+                /* Remove o corte diagonal no celular (fica retangular) */
+                clip-path: none; 
+                filter: none; 
+            }
+            
+            .headline { 
+                font-size: 1.8em; /* Diminui a fonte no celular */
+            }
+            
+            .logo {
+                display: flex;
+                justify-content: center; /* Centraliza logo */
+            }
+        }
+        
+        /* Ajuste extra para telas muito pequenas */
+        @media (max-width: 500px) {
+            .hero-section {
+                margin-left: 0; /* Remove margem da esquerda */
+                padding-left: 50px; /* Adiciona padding interno */
+            }
+            .image-container {
+                height: 300px; 
+                min-height: 300px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="hero-section">
+        <div class="main-content">
+            
+            <div class="text-content">
+                <div class="logo">
+                    <img src="fotos/logo_fran_faria.png" alt="Fran Faria Logo"> 
+                </div>
+                <h1 class="headline">O envelhecimento acontece porque vivemos, o autocuidado acontece porque nos amamos.</h1>
+            </div>
+
+            <div class="image-container">
+                <div class="image-wrapper">
+                    <img src="fotos/foto1_fran.jpg" alt="Fran Faria"> 
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // Função chamada quando clica no ícone do menu
+        function toggleMenu() {
+            // Busca o elemento HTML que tem a classe 'sidebar'
+            var sidebar = document.querySelector('.sidebar');
+            
+            // Verifica se ele existe para evitar erros
+            if(sidebar) {
+                // Adiciona ou remove a classe 'aberta'
+                // Se tiver 'aberta', o CSS aumenta a largura para 280px
+                // Se não tiver, o CSS volta a largura para 50px
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+
+</body>
+</html>

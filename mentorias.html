@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fran Faria - Mentorias e Eventos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. VARIÁVEIS (:root) --- 
+           Mantendo a consistência visual com a página inicial */
+        :root {
+            --cor-fundo-principal: #e8e3d9;
+            --cor-acento-escuro: #F4A79D;   /* Rosa (usado nos detalhes dos cards) */
+            --cor-texto: #59423b;
+            --cor-clara: #ffffff;
+            --cor-sidebar: #F4A79D;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cor-fundo-principal);
+            overflow-x: hidden;
+        }
+
+        /* --- 2. BARRA LATERAL --- */
+        .sidebar { 
+            position: fixed; /* Fixa na tela */
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; /* Largura fechada */
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; /* Animação de abertura */
+            overflow: hidden; 
+            box-sizing: border-box;
+            /* Sombra suave para separar o menu do fundo bege */
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
+        }
+        
+        /* Classe ativada pelo JavaScript */
+        .sidebar.aberta { width: 280px !important; }
+
+        /* Ícone do menu (Hambúrguer) */
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute; 
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        /* Lista de Links */
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; /* Invisível quando fechado */
+            transition: opacity 0.3s ease; 
+            white-space: nowrap; 
+            pointer-events: none; 
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: all 0.3s ease; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 3. ÁREA DE CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            margin-left: 50px; /* Deixa espaço para a barra lateral fechada */
+            padding: 40px 60px; /* Espaçamento interno generoso */
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Cabeçalho da Página (Título e Subtítulo) */
+        .page-header {
+            margin-bottom: 50px;
+            text-align: left;
+            /* Linha decorativa sutil abaixo do cabeçalho */
+            border-bottom: 1px solid rgba(89, 66, 59, 0.2);
+            padding-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 2.5em;
+            color: var(--cor-texto);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 1.1em;
+            color: var(--cor-acento-escuro); /* Usa a cor rosa para destaque */
+            margin-top: 10px;
+            font-weight: 300;
+        }
+
+        /* --- 4. GRID DE CARDS (IMPORTANTE) --- */
+        .cards-grid {
+            display: grid;
+            
+            /* TRUQUE MÁGICO DE RESPONSIVIDADE SEM MEDIA QUERIES:
+               - repeat(auto-fit, ...): Cria quantas colunas couberem na tela.
+               - minmax(300px, 1fr): Cada card tem no MÍNIMO 300px.
+                 Se sobrar espaço, ele estica (1fr).
+                 Se a tela diminuir e não caber 300px, ele joga o card pra linha de baixo. */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            
+            gap: 30px; /* Espaço entre os cards */
+        }
+
+        /* Estilo Individual do Card */
+        .card {
+            background-color: var(--cor-clara);
+            border-radius: 8px;
+            overflow: hidden;
+            /* Sombra suave inicial */
+            box-shadow: 0 4px 15px rgba(89, 66, 59, 0.1);
+            /* Prepara animação de movimento e sombra */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            
+            /* Flexbox Vertical: garante que o rodapé fique sempre embaixo */
+            display: flex;
+            flex-direction: column;
+            
+            /* Detalhe estético: borda colorida no topo do card */
+            border-top: 5px solid var(--cor-acento-escuro);
+        }
+
+        /* Efeito ao passar o mouse (Hover) */
+        .card:hover {
+            transform: translateY(-5px); /* Sobe o card levemente */
+            box-shadow: 0 8px 25px rgba(89, 66, 59, 0.2); /* Aumenta a sombra */
+        }
+
+        .card-body {
+            padding: 30px; 
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Ocupa todo o espaço vertical disponível no card */
+            color: var(--cor-texto);
+            justify-content: space-between;
+        }
+
+        /* Etiqueta (Mentoria / Evento) */
+        .card-tag {
+            background-color: var(--cor-fundo-principal);
+            color: var(--cor-acento-escuro);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            align-self: flex-start; /* Alinha à esquerda */
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .card-title {
+            font-size: 1.6em;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+        }
+
+        .card-desc {
+            font-size: 1em;
+            line-height: 1.6; /* Melhora a leitura do texto corrido */
+            margin-bottom: 30px;
+            color: #666; /* Texto cinza suave */
+            flex-grow: 1; /* Empurra o rodapé para baixo se o texto for curto */
+        }
+
+        /* Rodapé do Card (Onde fica a data/status) */
+        .card-footer {
+            margin-top: auto; /* Garante que fique no final do card */
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+        }
+
+        .card-date {
+            font-size: 0.85em;
+            color: #888;
+            font-weight: 600;
+        }
+
+        /* --- 5. RESPONSIVIDADE (CELULAR) --- */
+        @media (max-width: 900px) {
+            
+            /* Sidebar no celular */
+            .sidebar { width: 50px; height: 100%; }
+            .sidebar.aberta { width: 280px !important; height: 100%; }
+
+            /* Ajustes do Conteúdo Principal */
+            .main-content {
+                margin-left: 50px; 
+                padding: 40px 20px; /* Reduz padding lateral para caber mais conteúdo */
+            }
+
+            .page-title { font-size: 2em; }
+
+            /* Força os cards a ficarem em 1 coluna no celular */
+            .cards-grid {
+                grid-template-columns: 1fr; 
+            }
+
+            /* Alinhamento do menu interno */
+            .sidebar.aberta .menu-itens {
+                margin-top: 60px;
+                justify-content: flex-start;
+                align-items: flex-start;
+            }
+
+            .menu-itens a {
+                padding: 12px 20px;
+                text-align: left;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a> 
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        
+        <header class="page-header">
+            <h1 class="page-title">Mentorias e Eventos</h1>
+            <p class="page-subtitle">Aprofunde seu conhecimento.</p>
+        </header>
+
+        <div class="cards-grid">
+            
+            <div class="card">
+                <div class="card-body">
+                    <span class="card-tag">Mentoria</span>
+                    <h3 class="card-title">Toxina Botulínica</h3>
+                    <p class="card-desc">Domine as técnicas de aplicação com segurança, aprendendo marcações precisas e como obter resultados naturais e duradouros.</p>
+                    <div class="card-footer">
+                        <span class="card-date">Vagas Abertas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <span class="card-tag">Mentoria</span>
+                    <h3 class="card-title">Harmonização Facial</h3>
+                    <p class="card-desc">Uma imersão completa na arte de equilibrar traços, com foco em avaliação facial, preenchedores e bioestimuladores.</p>
+                    <div class="card-footer">
+                        <span class="card-date">Vagas Abertas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <span class="card-tag">Mentoria</span>
+                    <h3 class="card-title">Tricologia</h3>
+                    <p class="card-desc">Aprenda a diagnosticar e tratar as principais patologias do couro cabeludo e fios, expandindo seu portfólio de serviços.</p>
+                    <div class="card-footer">
+                        <span class="card-date">Vagas Abertas</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <span class="card-tag">Evento</span>
+                    <h3 class="card-title">Workshop de Tricologia</h3>
+                    <p class="card-desc">Um evento prático e exclusivo para profissionais que desejam se destacar no tratamento capilar com as técnicas mais modernas.</p>
+                    <div class="card-footer">
+                        <span class="card-date">Data a Confirmar</span>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premiações - Fran Faria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CONFIGURAÇÃO DE CORES (MODO ESCURO) --- */
+        :root {
+            --cor-sidebar: #F4A79D;       /* Rosa da barra */
+            --cor-fundo-escuro: #4a3b32;  /* Marrom escuro (Fundo da página) */
+            --cor-texto: #e8e3d9;         /* Bege claro (Cor do texto para dar contraste) */
+            --cor-destaque: #F4A79D;      /* Rosa para títulos e detalhes */
+        }
+
+        /* --- 2. RESET E TRAVAMENTO DA TELA --- */
+        html, body { 
+            margin: 0; 
+            padding: 0;
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--cor-fundo-escuro); /* Aplica o fundo escuro */
+            color: var(--cor-texto); /* Texto claro */
+            
+            /* MUITO IMPORTANTE: Evita que o site "dance" para os lados no celular */
+            overflow-x: hidden; 
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        /* --- 3. BARRA LATERAL (Padrão) --- */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; 
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; 
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+        
+        .sidebar.aberta { width: 280px !important; }
+
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            white-space: nowrap; 
+            pointer-events: none;
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: 0.3s; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 4. LAYOUT PRINCIPAL (PREMIAÇÕES) --- */
+        .container-premiacoes {
+            margin-left: 50px; /* Espaço da sidebar */
+            padding: 60px 10%; /* Espaçamento interno */
+            text-align: center; /* Centraliza tudo */
+            min-height: 100vh; /* Garante altura total */
+            
+            /* Flexbox para centralizar o conteúdo verticalmente na tela */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            
+            box-sizing: border-box;
+            /* Garante matematicamente que não vai estourar a largura (100% - 50px da barra) */
+            max-width: calc(100% - 50px); 
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: 300;
+            color: #e8e3d9;
+            margin-bottom: 60px;
+            margin-top: 0;
+        }
+
+        /* --- 5. GRID DOS PRÊMIOS --- */
+        .grid-premios {
+            display: grid;
+            /* Cria colunas automáticas com no mínimo 300px de largura */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1000px; /* Limita a largura para não ficar muito espalhado em telas gigantes */
+            margin: 0 auto; /* Centraliza o grid */
+        }
+
+        /* --- 6. ESTILO DOS CARDS (EFEITO VIDRO) --- */
+        .card-premio {
+            /* Fundo branco com 5% de opacidade (quase transparente) */
+            background-color: rgba(255, 255, 255, 0.05); 
+            
+            /* Borda fina e translúcida */
+            border: 1px solid rgba(244, 167, 157, 0.2); 
+            
+            padding: 50px 30px;
+            border-radius: 12px;
+            
+            /* Prepara animação */
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            position: relative; /* Necessário para posicionar o detalhe colorido (::before) */
+        }
+
+        /* Efeito ao passar o mouse */
+        .card-premio:hover {
+            transform: translateY(-5px); /* Sobe um pouquinho */
+            background-color: rgba(255, 255, 255, 0.08); /* Fica um pouco mais claro */
+            border-color: var(--cor-destaque); /* Borda fica rosa */
+        }
+
+        /* --- DETALHE VISUAL (A LINHA ROSA NO TOPO) --- 
+           O ::before cria um elemento visual "falso" sem precisar escrever no HTML */
+        .card-premio::before {
+            content: '';
+            position: absolute;
+            top: 0; /* Cola no topo do card */
+            left: 50%; /* Começa no meio */
+            transform: translateX(-50%); /* Centraliza perfeitamente */
+            width: 50px; /* Largura do traço */
+            height: 4px; /* Altura do traço */
+            background-color: var(--cor-destaque); /* Cor rosa */
+            border-radius: 0 0 4px 4px; /* Arredonda as pontas de baixo */
+        }
+
+        .titulo-premio {
+            font-size: 1.5em;
+            color: var(--cor-destaque);
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .desc-premio {
+            font-size: 1.1em;
+            line-height: 1.6;
+            /* Cor do texto com leve transparência para ficar suave */
+            color: rgba(232, 227, 217, 0.8);
+            font-weight: 300;
+        }
+
+        /* --- 7. RESPONSIVIDADE (CELULAR) --- */
+        @media (max-width: 768px) {
+            .container-premiacoes { 
+                padding: 80px 20px; 
+            }
+            
+            h1 { font-size: 2em; }
+
+            .grid-premios {
+                /* No celular, força 1 coluna só para os cards não ficarem espremidos */
+                grid-template-columns: 1fr; 
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="container-premiacoes">
+        <h1>Reconhecimentos</h1>
+        
+        <div class="grid-premios">
+            
+            <div class="card-premio">
+                <h2 class="titulo-premio">Femme Diamond</h2>
+                <p class="desc-premio">
+                    Homenagem dedicada a mulheres empreendedoras que fazem a diferença e transformam o cenário de São José do Rio Preto.
+                </p>
+            </div>
+
+            <div class="card-premio">
+                <h2 class="titulo-premio">Milionária Givers</h2>
+                <p class="desc-premio">
+                    Reconhecimento de alto nível no <strong>BNI</strong>, celebrando a contribuição significativa e a excelência em networking empresarial.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+</body>
+</html>

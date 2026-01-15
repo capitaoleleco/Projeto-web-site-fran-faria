@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Mim - Fran Faria</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORES E VARIÁVEIS --- 
+           Centraliza as cores para facilitar mudanças futuras */
+        :root {
+            --cor-sidebar: #F4A79D;       /* Cor da barra lateral (Salmão) */
+            --cor-fundo-bege: #F9F7F2;    /* Cor de fundo suave da página */
+            --cor-texto-marrom: #4A3B32;  /* Cor principal do texto */
+            --cor-destaque: #c6d65c;      /* Verde usado no nome da profissional */
+        }
+
+        /* --- 2. RESET BÁSICO --- */
+        body { 
+            margin: 0; 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--cor-fundo-bege); 
+            color: var(--cor-texto-marrom); 
+            overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+        }
+
+        /* --- 3. BARRA LATERAL (SIDEBAR) --- 
+           Mesmo estilo das outras páginas para consistência */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            width: 50px; 
+            background: var(--cor-sidebar); 
+            z-index: 1000; 
+            transition: width 0.5s ease; 
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+        
+        .sidebar.aberta { width: 280px !important; }
+
+        .menu-icon { 
+            cursor: pointer; 
+            padding: 15px; 
+            position: absolute; 
+            top: 10px;
+            left: 0;
+            width: 20px; 
+            height: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; 
+        }
+        
+        .menu-icon span { display: block; height: 3px; width: 100%; background: #fff; border-radius: 1px; }
+
+        .menu-itens { 
+            margin-top: 60px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 30px; 
+            padding-left: 15px; 
+            padding-right: 15px;
+            opacity: 0; 
+            transition: opacity 0.3s ease; 
+            white-space: nowrap; 
+            pointer-events: none; 
+        }
+        
+        .sidebar.aberta .menu-itens { opacity: 1; transition-delay: 0.2s; pointer-events: auto; }
+        
+        .menu-itens a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 16px; 
+            padding: 12px 20px; 
+            display: block; 
+            border-radius: 4px;
+            transition: all 0.3s ease; 
+        }
+        
+        .menu-itens a:hover { 
+            background: rgba(255,255,255,0.15); 
+            padding-left: 25px; 
+            font-weight: 600;
+        }
+
+        /* --- 4. LAYOUT DA PÁGINA SOBRE --- */
+        .container-sobre {
+            margin-left: 50px; /* Compensa a largura da sidebar fechada */
+            min-height: 100vh; /* Garante que o container ocupe a altura total da tela */
+            display: flex;     /* Ativa o Flexbox */
+            align-items: center; /* Centraliza verticalmente (o texto fica no meio da tela) */
+            justify-content: space-between; /* Espalha: Texto na esquerda, Foto na direita */
+            padding: 0 10%; /* Margem interna generosa nas laterais */
+            box-sizing: border-box;
+        }
+
+        /* Lado do Texto */
+        .texto-lado {
+            flex: 1; /* Ocupa metade do espaço */
+            padding-right: 50px; /* Espaço para não grudar na foto */
+        }
+
+        .titulo-grande {
+            font-size: 4em; /* Título bem grande */
+            font-weight: 300; /* Fonte fina e elegante */
+            margin: 0 0 20px 0;
+            line-height: 1;
+            color: #000000; 
+        }
+
+        .texto-bio {
+            line-height: 1.6; /* Espaçamento entre linhas para leitura confortável */
+            font-size: 1.1em;
+            color: var(--cor-texto-marrom); 
+            opacity: 0.95;
+            margin-bottom: 20px; 
+            text-align: justify; /* Deixa o bloco de texto quadradinho nas bordas */
+        }
+
+        .nome-profissional {
+            font-size: 1.2em;
+            color: var(--cor-destaque); /* Verde */
+            font-weight: 600;
+            text-transform: uppercase; /* Letras maiúsculas */
+            letter-spacing: 2px; /* Espaço entre as letras */
+            margin-top: 30px;
+            display: block;
+        }
+
+        /* Lado da Foto */
+        .foto-lado {
+            flex: 1; /* Ocupa a outra metade do espaço */
+            display: flex;
+            justify-content: center; /* Centraliza a bola da foto no espaço dela */
+            align-items: center;
+        }
+
+        /* Estilo da Foto Redonda */
+        .circulo-foto {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%; /* Faz o quadrado virar um círculo perfeito */
+            border: 5px solid #000000; /* Borda preta fina */
+            
+            /* Define a imagem como fundo da div */
+            background-image: url('fotos/franfaria3.jpeg'); 
+            background-size: cover; /* Garante que a foto preencha todo o círculo sem distorcer */
+            background-repeat: no-repeat;
+            background-position: center top; /* Foca no centro/topo da foto (bom para rostos) */
+            
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.1); /* Sombra suave abaixo */
+        }
+
+        /* --- 5. RESPONSIVIDADE (CELULAR) --- */
+        @media (max-width: 900px) {
+            .container-sobre { 
+                /* TRUQUE: column-reverse */
+                /* No HTML, o Texto vem antes da Foto. */
+                /* 'column' empilha um em cima do outro. */
+                /* 'reverse' inverte a ordem: Foto em Cima, Texto Embaixo. */
+                flex-direction: column-reverse;
+                
+                justify-content: center; 
+                text-align: center; /* Centraliza o texto no celular */
+                padding: 80px 20px; 
+            }
+
+            .texto-lado { 
+                padding-right: 0; 
+                margin-top: 40px; /* Dá espaço entre a foto (que está em cima) e o texto */
+            }
+
+            .circulo-foto { 
+                width: 280px; /* Diminui a foto no celular */
+                height: 280px; 
+            }
+
+            .titulo-grande { 
+                font-size: 2.5em; /* Diminui o título */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="menu-icon" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="menu-itens">
+            <a href="index.html">Início</a>
+            <a href="mentorias.html">Mentorias e Eventos</a>
+            <a href="sobre.html">Sobre mim</a>
+            <a href="avaliacoes.html">Avaliações</a>
+            <a href="premiacoes.html">Principais premiações</a>
+            <a href="procedimentos.html">Procedimentos</a>
+            <a href="contato.html">Entre em contato</a>
+        </nav>
+    </div>
+
+    <div class="container-sobre">
+        
+        <div class="texto-lado">
+            <h1 class="titulo-grande">Sobre Mim</h1>
+            
+            <p class="texto-bio">
+                Olá! Sou Francielli Carvalho de Faria, enfermeira apaixonada e dedicada à saúde e bem-estar desde 2006. Com especializações em Gestão de Saúde, Estética e Tricologia, meu objetivo é proporcionar um cuidado personalizado e eficiente para cada um de meus pacientes.
+            </p>
+
+            <p class="texto-bio">
+                Acredito que a saúde vai além do físico; é um estado de bem-estar que envolve corpo e mente. Por isso, busco sempre estar atualizada nas melhores práticas e tratamentos, para oferecer o que há de mais eficaz e inovador.
+            </p>
+
+            <p class="texto-bio">
+                Sou mãe de dois meninos incríveis, e essa experiência me ensinou muito sobre a importância do cuidado, da paciência e da empatia. Essas qualidades são fundamentais no meu trabalho, pois cada consulta é uma oportunidade de transformar vidas e ajudar as pessoas a se sentirem melhores em sua própria pele.
+            </p>
+
+            <span class="nome-profissional">Francielli Carvalho de Faria</span>
+        </div>
+        
+        <div class="foto-lado">
+            <div class="circulo-foto"></div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            var sidebar = document.querySelector('.sidebar');
+            if(sidebar) {
+                sidebar.classList.toggle('aberta');
+            }
+        }
+    </script>
+
+</body>
+</html>
