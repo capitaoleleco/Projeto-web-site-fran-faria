@@ -1,4 +1,4 @@
-# 🦋 Redesign: Site Fran Faria - Estética & Bem-Estar
+ Site Fran Faria - Estética & Bem-Estar
 
 Bem-vindo ao repositório do site oficial da **Fran Faria**, profissional especializada em Gestão de Saúde, Estética e Tricologia. 
 
